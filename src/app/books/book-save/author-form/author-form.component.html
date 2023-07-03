@@ -1,0 +1,49 @@
+<form [formGroup]="authorForm">
+    <mat-form-field class="w-100 mb-2">
+        <mat-label>Select authors</mat-label>
+        <mat-chip-grid #authorChipGrid formControlName="authorsSelect">
+            <mat-chip-row *ngFor="let c of authorChips; index as i"
+            (removed)="removeAuthorChip(i)" [value]="c.value">
+                {{c.viewValue}}
+                <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+        </mat-chip-grid>
+        <input #authorSearchInput matInput
+        [matAutocomplete]="authorAuto"
+        [matChipInputFor]="authorChipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" 
+        formControlName="authorsSearch"
+        placeholder="Search authors">
+        <mat-autocomplete autoActiveFirstOption #authorAuto 
+        (optionSelected)="handleAuthorOptionSelectedEvent($event)">
+            <mat-option *ngFor="let a of filteredAuthors$ | async" [value]="a.id">
+                {{a.authorName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <button type="button" class="btn btn-success mb-2" (click)="addNewAuthorGroup()">
+        Add new author
+    </button>
+
+    <div *ngIf="authorsFormArray.length">
+        <h5 class="ms-2 mt-2 text-primary">New authors</h5>
+        <div class="border m-2 p-3 pb-0 bg-light-subtle" formArrayName="newAuthors">
+            <div *ngFor="let group of authorsFormArray.controls; index as i" [formGroupName]="i">
+                <mat-form-field class="w-100 mb-2">
+                    <mat-label>New author {{i+1}}</mat-label>
+                    <input matInput formControlName="authorName">
+                    <mat-error *ngIf="getFormArrayControl(i.toString(), 'authorName').hasError('required')">field required</mat-error>
+                    <mat-error *ngIf="getFormArrayControl(i.toString(), 'authorName').hasError('unique')">duplicate author name</mat-error>
+                    <mat-error *ngIf="getFormArrayControl(i.toString(), 'authorName').hasError('authorNameExists')">author exists</mat-error>
+                    <button type="button" matSuffix class="btn btn-danger me-2"
+                    (click)="removeAuthorGroup(i)">
+                        <fa-icon [icon]="faTrashCan"></fa-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</form>

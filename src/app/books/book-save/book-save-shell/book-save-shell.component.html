@@ -1,0 +1,75 @@
+<div class="container">
+    <mat-card class="m-4 w-auto">
+        <mat-card-header>
+            <mat-card-title>
+                <h4>{{cardTitle}}</h4>
+                <hr>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="bookForm">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="ms-2 text-primary">Book details</h5>
+                        <div class="border m-2 p-3 mb-4">
+                            <mat-form-field class="w-100 mb-2">
+                                <mat-label>Title</mat-label>
+                                <input matInput formControlName="title">
+                                <mat-error *ngIf="getControl('title').hasError('required')">field required!</mat-error>
+                            </mat-form-field>
+    
+                            <mat-form-field class="w-100 mb-2">
+                                <mat-label>ISBN</mat-label>
+                                <input matInput formControlName="isbn">
+                                <mat-error *ngIf="getControl('isbn').hasError('required')">field required!</mat-error>
+                            </mat-form-field>
+    
+                            <mat-form-field class="w-100 mb-2">
+                                <mat-label>Pages</mat-label>
+                                <input matInput formControlName="pages">
+                                <mat-error *ngIf="getControl('pages').hasError('required')">field required!</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field class="w-100 mb-2">
+                                <mat-label>Description</mat-label>
+                                <textarea matInput formControlName="description" rows="3"></textarea>
+                                <mat-error *ngIf="getControl('description').hasError('required')">field required!</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <h5 class="ms-2 text-primary">Publisher details</h5>
+                        <div class="border m-2 p-3 mb-4">
+                            <app-publisher-form [parentForm]="bookForm" [book]="book"></app-publisher-form>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <h5 class="ms-2 text-primary">Author details</h5>
+                        <div class="border m-2 p-3">
+                            <app-author-form [parentForm]="bookForm" [book]="book"></app-author-form>
+                        </div>
+
+                        <h5 class="ms-2 text-primary">Genre details</h5>
+                        <div class="border m-2 p-3">
+                            <app-genre-form [parentForm]="bookForm" [book]="book"></app-genre-form>
+                        </div>
+
+                        <h5 class="ms-2 text-primary">Form data</h5>
+                        <div class="border m-2 p-3">
+                            <pre class="mb-0" style="white-space: pre-wrap;">output: {{bookForm.value | json}}</pre>
+                            <pre class="mb-0">invalid: {{bookForm.invalid}}</pre>
+                            <!-- <pre class="mb-0">touched: {{bookForm.touched}}</pre>
+                            <pre class="mb-0">dirty: {{bookForm.dirty}}</pre>
+                            <pre class="mb-0">pristine: {{bookForm.pristine}}</pre> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-danger btn-lg m-2">cancel</button>
+                    <button type="submit" class="btn btn-success btn-lg m-2" (click)="submitForm()">submit</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

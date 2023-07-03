@@ -1,0 +1,38 @@
+<form [formGroup]="publisherForm">
+    <div class="w-100 mb-2">
+        <mat-label>Publisher Type</mat-label>
+        <mat-radio-group formControlName="publisherType">
+            <mat-radio-button value="existing">Existing publisher</mat-radio-button>
+            <mat-radio-button value="new">New publisher</mat-radio-button>
+        </mat-radio-group>
+    </div>
+
+    <mat-form-field class="w-100 mb-2" *ngIf="getControl('publisherType').value === 'new'">
+        <mat-label>New publisher name</mat-label>
+        <input matInput formControlName="newPublisher">
+        <mat-error *ngIf="getControl('newPublisher').hasError('required')">field required</mat-error>
+        <mat-error *ngIf="getControl('newPublisher').hasError('publisherNameExists')">Publisher already exists</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-100 mb-2" *ngIf="getControl('publisherType').value === 'existing'">
+        <mat-label>Select publisher</mat-label>
+        <mat-select formControlName="publisherSelect">
+            <mat-option>
+                <ngx-mat-select-search placeholderLabel="Search publisher" noEntriesFoundLabel="no such publisher" formControlName="publisherSearch"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let p of filteredPublishers$ | async" 
+            [value]="p.id">
+                {{p.publisherName}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="getControl('publisherSelect').hasError('min')">field required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-100 mb-2">
+        <mat-label>Publication date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="publicationDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</form>

@@ -1,0 +1,46 @@
+<form [formGroup]="genreForm">
+    <mat-form-field class="w-100 mb-2">
+        <mat-label>Select genres</mat-label>
+        <mat-chip-grid #genreChipGrid formControlName="genresSelect">
+            <mat-chip-row *ngFor="let c of genreChips; index as i"
+            (removed)="removeGenreChip(i)" [value]="c.value">
+                {{c.viewValue}}
+                <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+        </mat-chip-grid>
+        <input #genreSearchInput matInput
+        [matAutocomplete]="genreAuto"
+        [matChipInputFor]="genreChipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" formControlName="genresSearch">
+        <mat-autocomplete autoActiveFirstOption #genreAuto 
+        (optionSelected)="handleGenreOptionSelectedEvent($event)">
+            <mat-option *ngFor="let g of filteredGenres$ | async" [value]="g.id">
+                {{g.genreName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <button type="button" class="btn btn-success mb-2" (click)="addNewGenreGroup()">
+        Add new genres
+    </button>
+
+    <div *ngIf="genresFormArray.length">
+        <h5 class="ms-2 mt-2 text-primary">New genres</h5>
+        <div class="border m-2 p-3 pb-0 bg-light-subtle" formArrayName="newGenres">
+            <div *ngFor="let group of genresFormArray.controls; index as i" [formGroupName]="i">
+                <mat-form-field class="w-100 mb-2">
+                    <mat-label>New genre {{i+1}}</mat-label>
+                    <input matInput formControlName="genreName">
+                    <mat-error *ngIf="getFormArrayControl(i.toString(), 'genreName').hasError('required')">field required</mat-error>
+                    <mat-error *ngIf="getFormArrayControl(i.toString(), 'genreName').hasError('unique')">duplicate genre name</mat-error>
+                    <button type="button" matSuffix class="btn btn-danger me-2"
+                    (click)="removeGenreGroup(i)">
+                        <fa-icon [icon]="faTrashCan"></fa-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</form>
